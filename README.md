@@ -15,6 +15,10 @@
 Този QR код се сканира от потребителя, чрез което той получава виртуалната сума в приложението.</p>   
 <img src="https://i.ibb.co/w6500fT/Recycle.png" width="200px"><br>
 
+<h2>Koffa-generator</h2>
+<img src="https://i.ibb.co/k8phHPT/koffa-generator.png" width="400px"><br>
+
+
 <h1>Имплементационни детайли</h1>
 <h2>Технологии</h2>
 <p><b>Front-end:</b> React Material-UI<br>
