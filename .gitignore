@@ -108,3 +108,6 @@ build
 
 # VS code
 .vscode
+
+# MacOS
+.DS_Store

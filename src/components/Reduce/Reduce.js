@@ -6,6 +6,8 @@ import Container from '@material-ui/core/Container';
 import Header from './Header';
 import FeaturedPost from './FeaturedPost';
 import Post from './Post';
+import TopBar from '../TopBar';
+import BottomBar from '../BottomBar';
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -73,19 +75,23 @@ export default function Reduce() {
   const classes = useStyles();
 
   return (
-    <div className={classes.main}>
-      <CssBaseline />
-      <Container>
-        <Header sections={sections} />
-        <div>
-          <FeaturedPost post={featuredPost} />
-          <Grid container spacing={2} className={classes.grid}>
-            {posts.map(post =>
-              <Post key={post.title} post={post} />
-            )}
-          </Grid>
-        </div>
-      </Container>
-    </div>
+    <>
+      <TopBar />
+      <div className={classes.main}>
+        <CssBaseline />
+        <Container>
+          <Header sections={sections} />
+          <div>
+            <FeaturedPost post={featuredPost} />
+            <Grid container spacing={2} className={classes.grid}>
+              {posts.map(post =>
+                <Post key={post.title} post={post} />
+              )}
+            </Grid>
+          </div>
+        </Container>
+      </div>
+      <BottomBar />
+    </>
   );
 }

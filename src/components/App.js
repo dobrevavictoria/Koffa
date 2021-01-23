@@ -4,9 +4,9 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Reduce from './Reduce/Reduce';
 import Reuse from './Reuse/Reuse';
 import Recycle from './Recycle/Recycle';
-import TopBar from './TopBar';
-import BottomBar from './BottomBar';
 import HomePage from './HomePage';
+import { PrivateRoute } from './Auth/PrivateRoute';
+import Container from './Auth/Container';
 
 const theme = createMuiTheme({
   palette: {
@@ -26,16 +26,17 @@ const theme = createMuiTheme({
 });
 
 export default function App() {
+
   return (
     <ThemeProvider theme={theme}>
-      <TopBar />
       <Switch>
-        <Route exact from="/" render={() => <HomePage />} />
-        <Route exact path="/reduce" render={() => <Reduce />} />
-        <Route exact path="/reuse" render={() => <Reuse />} />
-        <Route exact path="/recycle" render={() => <Recycle />} />
+        <Route exact path="/login" component={Container} />
+
+        <PrivateRoute exact path="/" component={HomePage} />
+        <PrivateRoute exact path="/reduce" component={Reduce} />
+        <PrivateRoute exact path="/reuse" component={Reuse} />
+        <PrivateRoute exact path="/recycle" component={Recycle} />
       </Switch>
-      <BottomBar />
     </ThemeProvider>
   )
 }

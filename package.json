@@ -2,7 +2,7 @@
   "name": "koffa",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://m-ignatov.github.io/koffa",
+  "homepage": "https://dobrevavictoria.github.io/Koffa",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/data-grid": "^4.0.0-alpha.8",
@@ -17,6 +17,7 @@
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
+    "sync-fetch": "^0.3.0",
     "tabler-react": "^2.0.0-alpha.1"
   },
   "scripts": {

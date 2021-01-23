@@ -23,6 +23,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import TopBar from '../TopBar';
+import BottomBar from '../BottomBar';
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -130,6 +132,7 @@ export default function Reuse() {
 
   return (
     <>
+      <TopBar />
       <CssBaseline />
       <main className={classes.main}>
         <div className={classes.heroContent} />
@@ -204,6 +207,7 @@ export default function Reuse() {
           </Button>
         </DialogActions>
       </Dialog>
+      <BottomBar />
     </>
   );
 }

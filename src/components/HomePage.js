@@ -15,6 +15,8 @@ import Paper from '@material-ui/core/Paper';
 
 import { EmojiObjects, FindReplace, Room } from '@material-ui/icons';
 import { CssBaseline } from '@material-ui/core';
+import BottomBar from './BottomBar';
+import TopBar from './TopBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,119 +118,123 @@ export default function HomePage() {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Typography variant="h4" component="h1" className={classes.sectionName}>
-        My Impact
+    <>
+      <TopBar />
+      <div className={classes.root}>
+        <CssBaseline />
+        <Typography variant="h4" component="h1" className={classes.sectionName}>
+          My Impact
       </Typography>
-      <Timeline className={classes.timeline} align="alternate">
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot color="secondary">
-              <FindReplace color="#fff" />
-            </TimelineDot>
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                Reuse
+        <Timeline className={classes.timeline} align="alternate">
+          <TimelineItem>
+            <TimelineSeparator>
+              <TimelineDot color="secondary">
+                <FindReplace color="#fff" />
+              </TimelineDot>
+              <TimelineConnector />
+            </TimelineSeparator>
+            <TimelineContent>
+              <Paper elevation={3} className={classes.paper}>
+                <Typography variant="h6" component="h1">
+                  Reuse
               </Typography>
-              <Typography>
-                <b>21 items</b>
-                {' reused'}
+                <Typography>
+                  <b>21 items</b>
+                  {' reused'}
+                </Typography>
+              </Paper>
+            </TimelineContent>
+          </TimelineItem>
+          <TimelineItem>
+            <TimelineSeparator>
+              <TimelineDot color="secondary" variant="outlined">
+                <EmojiObjects color="secondary" />
+              </TimelineDot>
+              <TimelineConnector />
+            </TimelineSeparator>
+            <TimelineContent>
+              <Paper elevation={3} className={classes.paper}>
+                <Typography variant="h6" component="h1">
+                  Reduce
               </Typography>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot color="secondary" variant="outlined">
-              <EmojiObjects color="secondary" />
-            </TimelineDot>
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                Reduce
-              </Typography>
-              <Typography>
-                <b>Paper</b>
+                <Typography>
+                  <b>Paper</b>
                 : 1kg
               </Typography>
-              <Typography>
-                <b>Plastic</b>
+                <Typography>
+                  <b>Plastic</b>
                 : 0kg
               </Typography>
-              <Typography>
-                <b>Glass</b>
+                <Typography>
+                  <b>Glass</b>
                 : 1kg
               </Typography>
-              <Typography>
-                <b>Electronics</b>
+                <Typography>
+                  <b>Electronics</b>
                 : 3kg
               </Typography>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot color="secondary">
-              <Room color="#fff" />
-            </TimelineDot>
-            <TimelineConnector className={classes.secondaryTail} />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                Recycle
+              </Paper>
+            </TimelineContent>
+          </TimelineItem>
+          <TimelineItem>
+            <TimelineSeparator>
+              <TimelineDot color="secondary">
+                <Room color="#fff" />
+              </TimelineDot>
+              <TimelineConnector className={classes.secondaryTail} />
+            </TimelineSeparator>
+            <TimelineContent>
+              <Paper elevation={3} className={classes.paper}>
+                <Typography variant="h6" component="h1">
+                  Recycle
               </Typography>
-              <Typography>
-                <b>16 items</b>
-                {' recycled'}
+                <Typography>
+                  <b>16 items</b>
+                  {' recycled'}
+                </Typography>
+              </Paper>
+            </TimelineContent>
+          </TimelineItem>
+          <TimelineItem>
+            <TimelineSeparator>
+              <TimelineDot color="secondary" variant="outlined">
+                <RepeatIcon color="secondary" />
+              </TimelineDot>
+            </TimelineSeparator>
+            <TimelineContent>
+              <Paper elevation={3} className={classes.paper}>
+                <Typography variant="h6" component="h1">
+                  Repeat
               </Typography>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot color="secondary" variant="outlined">
-              <RepeatIcon color="secondary" />
-            </TimelineDot>
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} className={classes.paper}>
-              <Typography variant="h6" component="h1">
-                Repeat
-              </Typography>
-              <Typography>Because green life is better!</Typography>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
-      </Timeline>
-      <Typography variant="h4" component="h1" className={classes.sectionName}>
-        Did you know...
+                <Typography>Because green life is better!</Typography>
+              </Paper>
+            </TimelineContent>
+          </TimelineItem>
+        </Timeline>
+        <Typography variant="h4" component="h1" className={classes.sectionName}>
+          Did you know...
       </Typography>
-      <GridList cellHeight={160} className={classes.gridList} cols={1}>
-        {tileData.map(tile =>
-          <GridListTile key={tile.img} cols={tile.cols || 1}>
-            <img src={tile.img} alt={tile.title} />
-          </GridListTile>
-        )}
-      </GridList>
-      <Typography variant="h4" component="h1" className={classes.sectionName}>
-        Ranklist
+        <GridList cellHeight={160} className={classes.gridList} cols={1}>
+          {tileData.map(tile =>
+            <GridListTile key={tile.img} cols={tile.cols || 1}>
+              <img src={tile.img} alt={tile.title} />
+            </GridListTile>
+          )}
+        </GridList>
+        <Typography variant="h4" component="h1" className={classes.sectionName}>
+          Ranklist
       </Typography>
-      <div className={classes.dataGrid}>
-        <DataGrid
-          hideFooterRowCount
-          pageSize={5}
-          hideFooterSelectedRowCount
-          rows={rows}
-          columns={columns}
-        />
+        <div className={classes.dataGrid}>
+          <DataGrid
+            hideFooterRowCount
+            pageSize={5}
+            hideFooterSelectedRowCount
+            rows={rows}
+            columns={columns}
+          />
+        </div>
       </div>
-    </div>
+      <BottomBar />
+    </>
   );
 }
