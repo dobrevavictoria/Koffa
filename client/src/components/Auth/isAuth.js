@@ -1,9 +1,9 @@
 import syncFetch from 'sync-fetch';
 
 export default function isAuth() {
-  const result = syncFetch('https://koffa-api.herokuapp.com/auth/checkToken', {
+  const result = syncFetch('/api/auth/checkToken', {
     method: 'GET',
-    credentials: 'include',
+    // credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     }
