@@ -43,9 +43,6 @@ class Recycle extends Component {
           google={this.props.google} >
           <Marker
             onClick={this.onMarkerClick}
-            name={'Your position'} />
-          <Marker
-            onClick={this.onMarkerClick}
             title={'The marker`s title will appear as a tooltip.'}
             name={'Buying Scarp'}
             position={{ lat: 42.66833178808714, lng: 23.352121650795137 }}
