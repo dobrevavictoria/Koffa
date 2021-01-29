@@ -44,7 +44,6 @@ function Login(props) {
     fetch('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
-      // credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       }

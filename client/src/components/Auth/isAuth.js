@@ -3,7 +3,6 @@ import syncFetch from 'sync-fetch';
 export default function isAuth() {
   const result = syncFetch('/api/auth/checkToken', {
     method: 'GET',
-    // credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     }
