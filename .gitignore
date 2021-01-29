@@ -108,3 +108,6 @@ dist
 
 # MacOS
 .DS_Store
+
+# React build
+build

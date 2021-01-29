@@ -13,7 +13,8 @@
   "scripts": {
     "start": "node server.js",
     "start-dev": "nodemon server.js",
-    "deploy": "git push heroku main"
+    "deploy": "git push heroku main",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "engines": {
     "node": ">=0.12"
