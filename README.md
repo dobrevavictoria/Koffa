@@ -22,7 +22,7 @@
 <h1>Имплементационни детайли</h1>
 <h2>Технологии</h2>
 <p><b>Front-end:</b> React Material-UI<br>
-<b>Back-end:</b> Express.js, REST API, MySQL DB</p>
+<b>Back-end:</b> Express.js, REST API, MongoDB</p>
 
 <h2>Основни функционалности</h2>
 <h3>Общи</h3>
