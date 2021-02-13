@@ -25,6 +25,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TopBar from '../TopBar';
 import BottomBar from '../BottomBar';
+import AddItemDialog from '../AddItemDialog';
+import ScannerDialog from '../ScannerDialog';
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -160,6 +162,7 @@ export default function Reuse() {
                       <Typography variant="body2" color="textSecondary" component="p">
                         {`${card.description}`}
                       </Typography>
+
                     </CardContent>
                   </CardActionArea>
                   <CardActions disableSpacing>
@@ -184,9 +187,11 @@ export default function Reuse() {
             ))}
           </Grid>
         </Container>
-        <Fab color="primary" size="large" aria-label="add" className={classes.buttonRoot}>
-          <AddIcon />
-        </Fab>
+
+        <div className={classes.buttonRoot}>
+          <AddItemDialog/>
+        </div>
+
       </main>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Confirmation</DialogTitle>
