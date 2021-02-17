@@ -21,7 +21,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import './AddItem.css';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -32,141 +31,182 @@ const useStyles = makeStyles((theme) => ({
     selectEmpty: {
         marginTop: theme.spacing(2),
     },
+    input: {
+        display: 'none'
+    },
+    image: {
+        height: 'auto',
+        width: '70%',
+        margin: '20px'
+    },
+      
+  column: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexBasis: '100%',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%'
+  },
+  wrapper: {
+    margin: '10px'
+  },
+  uploadButton: {
+      margin: '10px'
+  }
+
 }));
 
 export default function AddItemDialog() {
-        const classes = useStyles();
-        const txtFieldstyle = {
-            width: '70%',
-            height: 'auto',
-            //    float: 'left',
-            margin: '10px'
+    const classes = useStyles();
+    const txtFieldstyle = {
+        width: '70%',
+        height: 'auto',
+        //    float: 'left',
+        margin: '10px'
 
-        };
-        const [category, setCategory] = React.useState('');
+    };
 
-          const handleChange = (event) => {
-            setCategory(event.target.value);
-          };
+    const [category, setCategory] = React.useState('');
+    const [uploadedImage, setUploadedImage] = React.useState(null);
 
-        const [open, setOpen] = useState(false);
-        const [result, setResult] = useState(null);
+    const handleImageUpload = (event) => {
+        setUploadedImage(URL.createObjectURL(event.target.files[0]));
+    }
 
-        const handleClickOpen = () => {
-            setOpen(true);
-            setResult(null);
-        };
+    const onCategoryChange = (event) => {
+        setCategory(event.target.value);
+    };
+    
 
-        const handleClose = () => {
-            setOpen(false);
-        };
+    const [open, setOpen] = useState(false);
+    const [result, setResult] = useState(null);
 
-        const handleConfirm = () => {
-            setOpen(false);
-            const badge = document.getElementById("badgeLevsCount").getElementsByClassName("MuiBadge-badge")[0];
-            badge.innerText = parseInt(badge.innerText) + parseInt(result);
-        };
+    const handleClickOpen = () => {
+        setOpen(true);
+        setResult(null);
+    };
 
-        const handleScan = (data) => {
-            if (data) {
-                setResult(data);
-            }
+    const handleClose = () => {
+        setOpen(false);
+        setUploadedImage(null);
+    };
+
+    const handleConfirm = () => {
+        setOpen(false);
+        const badge = document.getElementById("badgeLevsCount").getElementsByClassName("MuiBadge-badge")[0];
+        badge.innerText = parseInt(badge.innerText) + parseInt(result);
+        setUploadedImage(null);
+    };
+
+    const handleScan = (data) => {
+        if (data) {
+            setResult(data);
         }
+    }
 
-        const handleError = err => {
-            console.error(err);
-        }
-  
-        return (
-            <div>
-                <Fab
-                    onClick={handleClickOpen}
-                    color="primary" size="large" aria-label="add">
-                    <AddIcon />
-                </Fab>
+    const handleError = err => {
+        console.error(err);
+    }
 
-                <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth={'md'}>
-                    <DialogTitle id="form-dialog-title">{!result ? "Add Item" : "Success"}</DialogTitle>
-                    <DialogContent>
-                        <div class="wrapper">
-                            <div class='row'>
-                                <div class='column'>
-                                    <FormControl variant="outlined" className={classes.formControl}>
-                                        <InputLabel id="category-label">Category</InputLabel>
-                                        <Select
-                                            labelId="category-label"
-                                            id="category"
-                                            value={category}
-                                            onChange={handleChange}
-                                            label="Category"
-                                        >
-                                            <MenuItem value="">
-                                                <em>None</em>
-                                            </MenuItem>
-                                            <MenuItem value={'Electronics'}>Electronics</MenuItem>
-                                            <MenuItem value={'Books-Hobbies'}>Books &amp; Hobbies</MenuItem>
-                                            <MenuItem value={'Home'}>Home</MenuItem>
-                                            <MenuItem value={'Fashion'}>Fashion</MenuItem>
-                                            <MenuItem value={'Other'}>Other</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                    <TextField
-                                        autoFocus
-                                        id="product-name"
-                                        placeholder="Product name"
-                                        margin="dense"
-                                        label="Product name"
-                                        type="text"
-                                        fullWidth
-                                        style={txtFieldstyle}
-                                    />
+    return (
+        <div>
+            <Fab
+                onClick={handleClickOpen}
+                color="primary" size="large" aria-label="add">
+                <AddIcon />
+            </Fab>
 
-                                    <TextField
-                                        id="product-city"
-                                        placeholder="City"
-                                        margin="dense"
-                                        label="City"
-                                        type="text"
-                                        fullWidth
-                                        style={txtFieldstyle}
-                                    />
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth={true} maxWidth={'md'}>
+                <DialogTitle id="form-dialog-title">{!result ? "Add Item" : "Success"}</DialogTitle>
+                <DialogContent>
+                    <div className={classes.wrapper}>
+                        {/* <div className={classes.row}> */}
+                            <div className={classes.column}>
+                                <FormControl variant="outlined" className={classes.formControl}>
+                                    <InputLabel id="category-label">Category</InputLabel>
+                                    <Select
+                                        labelId="category-label"
+                                        id="category"
+                                        value={category}
+                                        onChange={onCategoryChange}
+                                        label="Category"
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        <MenuItem value={'Electronics'}>Electronics</MenuItem>
+                                        <MenuItem value={'Books-Hobbies'}>Books &amp; Hobbies</MenuItem>
+                                        <MenuItem value={'Home'}>Home</MenuItem>
+                                        <MenuItem value={'Fashion'}>Fashion</MenuItem>
+                                        <MenuItem value={'Other'}>Other</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <TextField
+                                    autoFocus
+                                    id="product-name"
+                                    placeholder="Product name"
+                                    margin="dense"
+                                    label="Product name"
+                                    type="text"
+                                    fullWidth
+                                    style={txtFieldstyle}
+                                />
 
-                                    <TextField
-                                        id="product-price"
-                                        placeholder="Price"
-                                        margin="dense"
-                                        label="Price"
-                                        type="number"
-                                        fullWidth
-                                        style={txtFieldstyle}
-                                    />
-                                </div>
-                                <div class="column">
-                                    <div id="upload">
-                                        <label for="dataFile" class="custom-upload" id="uploadLabel"><i class="fa fa-cloud-upload" aria-hidden="true"></i>Upload</label>
-                                        <input type="file" id="dataFile" name="dataFile" accept="image/*" required=""  /> 
-                                        {/* onChange={this.handleChange} */}
-                                        {/* <img src={this.state.file} /> */}
-                                        <p id="upload-error"></p>
-                                    </div>
-                                </div>
+                                <TextField
+                                    id="product-city"
+                                    placeholder="City"
+                                    margin="dense"
+                                    label="City"
+                                    type="text"
+                                    fullWidth
+                                    style={txtFieldstyle}
+                                />
+
+                                <TextField
+                                    id="product-price"
+                                    placeholder="Price"
+                                    margin="dense"
+                                    label="Price"
+                                    type="number"
+                                    fullWidth
+                                    style={txtFieldstyle}
+                                />
                             </div>
-                        </div>
-                        {/* 
+                            <div className={classes.column}>
+                                    {/* <label for="dataFile" class="custom-upload" id="uploadLabel"><i class="fa fa-cloud-upload" aria-hidden="true"></i>Upload</label> */}
+                                    <input type="file" id="image-file" name="image-file" accept="image/*" required=""  className= {classes.input} onChange={handleImageUpload} />
+                                    <label htmlFor="image-file">
+                                        <Button variant="contained" color="primary" component="div" className={classes.uploadButton}>
+                                            Upload Image
+                                        </Button>
+                                    </label>
+                                    <img src={uploadedImage} className={classes.image}/>
+                                    <p id="upload-error"></p>
+                            </div>
+                        {/* </div> */}
+                    </div>
+                    {/* 
 <form onSubmit={handleSubmit}>
     </form>
    */}
 
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleConfirm} color="primary">
-                            Save
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleConfirm} color="primary">
+                        Save
           </Button>
-                        <Button onClick={handleClose} color="primary">
-                            Cancel
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
           </Button>
-                    </DialogActions>
-                </Dialog>
-            </div >
-        )
-    }
+                </DialogActions>
+            </Dialog>
+        </div >
+    )
+}
