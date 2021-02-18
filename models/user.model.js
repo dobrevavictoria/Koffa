@@ -5,7 +5,8 @@ const saltRounds = 10;
 
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  ecolevs: {type: Number, default: 1000}
 });
 
 UserSchema.pre('save', function (next) {
