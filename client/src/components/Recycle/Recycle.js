@@ -36,7 +36,7 @@ class Recycle extends Component {
   };
 
   componentDidMount() {
-    fetch('/api/recycle/places/show', {
+    fetch('/api/recycle/places', {
       method: 'GET'
     })
       .then(value => value.json())

@@ -85,7 +85,7 @@ export default function Reuse() {
   const [items, setItems] = React.useState([]);
 
   useEffect(() => {
-    fetch('/api/reuse/items/show', { method: 'GET' })
+    fetch('/api/reuse/items', { method: 'GET' })
       .then(res => res.json())
       .then(data => {
         setItems(data); console.log(items);

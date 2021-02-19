@@ -138,7 +138,6 @@ function AddItemDialog() {
   const handleConfirm = (event) => {
     event.preventDefault();
     const data = new FormData(event.target);
-    //  console.log('IMORTANT ON SEND: ', imageBase64);
     data.append("imageBase64", imageBase64);
 
     for (var pair of data.entries()) {
@@ -146,26 +145,7 @@ function AddItemDialog() {
     }
     console.log(data.get("image"));
 
-
-    // fetch('/api/reuse/items',
-    // {
-    //   method: 'POST'
-    // })
-    // .then(res => {
-    //   if (res.status === 200)
-    //   {
-    //     alert('Successfuly POST');
-    //   } else {
-    //     console.log('ERROR: ', res.error);
-    //     throw new Error(res.error);
-    //   }
-    // })
-    // .catch(err => {
-    //   console.log(err);
-    //   alert('Items not POSTED');
-    // });
-
-    fetch('/api/reuse/add', {
+    fetch('/api/reuse/item', {
       method: 'POST',
       body: data
     })
