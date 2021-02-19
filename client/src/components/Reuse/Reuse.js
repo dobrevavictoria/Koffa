@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -69,31 +69,11 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(1),
     float: 'right',
   },
+  imgStyle: {
+    width: '100%',
+    height: '400px'
+  }
 }));
-
-const cards = [
-  {
-    productTitle: 'Night Lamp', subheader: 'Plovdiv, 23 Oct 2020', img: require('../../images/lamp.jpg'), description: '', ecoprice: '20',
-  },
-  {
-    productTitle: 'Home Decoration', subheader: 'Burgas, 23 Oct 2020', img: require('../../images/homedecor1.jpg'), description: '', ecoprice: '5',
-  },
-  {
-    productTitle: 'Mini Dress by Lola Dre', subheader: 'Varna, 24 Oct 2020', img: require('../../images/dress.jpg'), description: '', ecoprice: '20',
-  },
-  {
-    productTitle: 'Kitchen Table', subheader: 'Sofia, 23 Oct 2020', img: require('../../images/table.jpg'), description: '', ecoprice: '150',
-  },
-  {
-    productTitle: 'Men Watch', subheader: 'Plovdiv, 23 Oct 2020', img: require('../../images/watch.jpg'), description: '', ecoprice: '55',
-  },
-  {
-    productTitle: '"The Long Walk" by St. King', subheader: 'Sofia, 24 Oct 2020', img: require('../../images/book.jfif'), description: '', ecoprice: '10',
-  },
-  {
-    productTitle: 'X13 Yoga (13”) Intel', subheader: 'Pernik, 23 Oct 2020', img: require('../../images/laptop.jfif'), description: '', ecoprice: '700',
-  },
-];
 
 export default function Reuse() {
   const classes = useStyles();
@@ -102,10 +82,16 @@ export default function Reuse() {
   const [ecoLevs, setEcoLevs] = React.useState(null);
   const [toDelete, setToDelete] = React.useState(null);
   const [availableEcoLevs, setAvailableEcoLevs] = React.useState(null);
+  const [items, setItems] = React.useState([]);
 
   useEffect(() => {
-    setAvailableEcoLevs(parseInt(document.getElementById('badgeLevsCount').getElementsByClassName('MuiBadge-badge')[0].innerText));
-  }, []);
+    fetch('/api/reuse/items/show', { method: 'GET' })
+      .then(res => res.json())
+      .then(data => {
+        setItems(data); console.log(items);
+      })
+      .catch(err => { console.log('GET items failed: ', err); });
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -140,27 +126,24 @@ export default function Reuse() {
         <div className={classes.heroContent} />
         <Container className={classes.cardGrid}>
           <Grid container spacing={4}>
-            {cards.map((card) => (
+            {items.map((card) => (
+              console.log(`${'src: '.toUpperCase()} ,${Buffer.from(card.imageBuffer.data).toString('base64')}`),
               <Grid item key={card} xs={12} sm={8} md={4}>
                 <Card className={classes.cardroot}>
                   <CardActionArea>
-                    <CardMedia
-                      className={classes.cardmedia}
-                      image={`${card.img}`}
-                      title={`${card.description}`}
-                    />
+                    <img class="itemImage" className={classes.imgStyle}
+                    src={`data:image/png;base64,${Buffer.from(card.imageBuffer.data).toString('base64')}`}></img>
                     <CardHeader
                       action={(
                         <IconButton aria-label="settings">
                           <MoreVertIcon />
                         </IconButton>
                       )}
-                      title={`${card.productTitle}`}
+                      title={`${card.name}`}
                       subheader={`${card.subheader}`}
                     />
                     <CardContent>
                       <Typography variant="body2" color="textSecondary" component="p">
-                        {`${card.description}`}
                       </Typography>
 
                     </CardContent>
@@ -175,10 +158,10 @@ export default function Reuse() {
                     <IconButton aria-label="price">
                       <EcoIcon />
                       <Typography id="price" variant="body2" color="textSecondary" component="p">
-                        {`${card.ecoprice}`}
+                        {`${card.price}`}
                       </Typography>
                     </IconButton>
-                    <Button disabled={availableEcoLevs < card.ecoprice} onClick={onClick} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
+                    <Button disabled={availableEcoLevs < card.price} onClick={onClick} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
                       Get it
                     </Button>
                   </CardActions>
@@ -189,7 +172,7 @@ export default function Reuse() {
         </Container>
 
         <div className={classes.buttonRoot}>
-          <AddItemDialog/>
+          <AddItemDialog />
         </div>
 
       </main>

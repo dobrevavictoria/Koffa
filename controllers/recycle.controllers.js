@@ -58,17 +58,18 @@ module.exports = {
         // console.log(allMarkers);
     },
     show: (req, res) => { //get
-        const allMarkers = Marker.find({}, function (err, res) {
+        Marker.find({}, function (err, markers) {
             if (err) {
                 console.error(err);
                 res.status(500)
                     .json({
                         error: 'Internal error please try again'
                     });
-            } else {
-                console.log(allMarkers);
-                res.send(allMarkers);
-                res.status(200).json({ info: 'Operation successfull.' });
+            }
+            else {
+                console.log(markers);
+                //res.status(200).json({ info: 'Operation successfull.' });
+                res.send(markers);
             }
 
         });

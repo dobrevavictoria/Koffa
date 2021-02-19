@@ -3,7 +3,7 @@ const User = require('../models/user.model');
 
 module.exports = {
   register: (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.fields;
     const user = new User({ email, password });
 
     user.save(function (err) {
@@ -21,7 +21,7 @@ module.exports = {
   },
 
   login: (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.fields;
 
     User.findOne({ email }, function (err, user) {
       if (err) {

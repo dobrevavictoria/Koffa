@@ -16,6 +16,5 @@ const markerSchema = new mongoose.Schema({
     telephone: { type: String, required: true }
 });
 
-
 module.exports = mongoose.model('Position', positionSchema);
 module.exports = mongoose.model('Marker', markerSchema);
