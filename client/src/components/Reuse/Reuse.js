@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { connect } from "react-redux";
+import { getUserInfo } from '../../js/actions/index';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -23,6 +25,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TopBar from '../TopBar';
 import BottomBar from '../BottomBar';
 import AddItemDialog from './AddItemDialog';
+
+const mapStateToProps = state => {
+  return {
+    userInfo: state.userInfo,
+  };
+};
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -71,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Reuse() {
+function Reuse(props) {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -85,6 +93,10 @@ export default function Reuse() {
       .then(res => res.json())
       .then(data => setItems(data))
       .catch(err => console.error('GET items failed: ', err));
+  });
+
+  useEffect(() => {
+    props.getUserInfo();
   });
 
   const handleClickOpen = () => {
@@ -121,10 +133,10 @@ export default function Reuse() {
         <Container className={classes.cardGrid}>
           <Grid container spacing={4}>
             {items.map(card => (
-              <Grid item key={card} xs={12} sm={8} md={4}>
+              <Grid item xs={12} sm={8} md={4}>
                 <Card className={classes.cardroot}>
                   <CardActionArea>
-                    <img class="itemImage" className={classes.imgStyle}
+                    <img className={classes.imgStyle}
                       src={`data:image/png;base64,${Buffer.from(card.imageBuffer.data).toString('base64')}`}></img>
                     <CardHeader
                       action={(
@@ -154,7 +166,7 @@ export default function Reuse() {
                         {`${card.price}`}
                       </Typography>
                     </IconButton>
-                    <Button disabled={availableEcoLevs < card.price} onClick={onClick} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
+                    <Button disabled={props.userInfo.ecoLevs < card.price} onClick={onClick} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
                       Get it
                     </Button>
                   </CardActions>
@@ -190,3 +202,5 @@ export default function Reuse() {
     </>
   );
 }
+
+export default connect(mapStateToProps, { getUserInfo })(Reuse);
