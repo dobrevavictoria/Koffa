@@ -12,9 +12,8 @@ module.exports.connect = app => {
   router.use('/recycle', RecycleRouter);
 
   app.use('/api', router);
-  
+
   app.use('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
   });
-
 };

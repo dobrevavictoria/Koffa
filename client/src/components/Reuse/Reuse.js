@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,8 +14,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import EcoIcon from '@material-ui/icons/Eco';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -25,8 +22,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TopBar from '../TopBar';
 import BottomBar from '../BottomBar';
-import AddItemDialog from '../AddItemDialog';
-import ScannerDialog from '../ScannerDialog';
+import AddItemDialog from './AddItemDialog';
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -87,10 +83,8 @@ export default function Reuse() {
   useEffect(() => {
     fetch('/api/reuse/items', { method: 'GET' })
       .then(res => res.json())
-      .then(data => {
-        setItems(data); console.log(items);
-      })
-      .catch(err => { console.log('GET items failed: ', err); });
+      .then(data => setItems(data))
+      .catch(err => console.error('GET items failed: ', err));
   });
 
   const handleClickOpen = () => {
@@ -126,13 +120,12 @@ export default function Reuse() {
         <div className={classes.heroContent} />
         <Container className={classes.cardGrid}>
           <Grid container spacing={4}>
-            {items.map((card) => (
-              console.log(`${'src: '.toUpperCase()} ,${Buffer.from(card.imageBuffer.data).toString('base64')}`),
+            {items.map(card => (
               <Grid item key={card} xs={12} sm={8} md={4}>
                 <Card className={classes.cardroot}>
                   <CardActionArea>
                     <img class="itemImage" className={classes.imgStyle}
-                    src={`data:image/png;base64,${Buffer.from(card.imageBuffer.data).toString('base64')}`}></img>
+                      src={`data:image/png;base64,${Buffer.from(card.imageBuffer.data).toString('base64')}`}></img>
                     <CardHeader
                       action={(
                         <IconButton aria-label="settings">
@@ -170,11 +163,9 @@ export default function Reuse() {
             ))}
           </Grid>
         </Container>
-
         <div className={classes.buttonRoot}>
           <AddItemDialog />
         </div>
-
       </main>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Confirmation</DialogTitle>

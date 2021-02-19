@@ -1,10 +1,9 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import CurrentLocation from './CurrentLocation';
 import TopBar from '../TopBar';
 import BottomBar from '../BottomBar';
-
 
 class Recycle extends Component {
 
@@ -42,13 +41,8 @@ class Recycle extends Component {
       .then(value => value.json())
       .then(data => {
         this.setState({ allMarkers: data });
-        console.log('Set allMafrkers');
       })
-      .catch(err => {
-        console.log(err);
-        alert('Recycle GET failed');
-
-      });
+      .catch(err => console.error(err));
   }
 
   render() {

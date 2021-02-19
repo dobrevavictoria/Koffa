@@ -1,29 +1,19 @@
 import React, { useState } from 'react';
 import { withRouter } from "react-router-dom";
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Alert from '@material-ui/lab/Alert';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import { makeStyles } from '@material-ui/core/styles';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import CropFreeIcon from '@material-ui/icons/CropFree';
-import EcoIcon from '@material-ui/icons/Eco';
-import QrReader from 'react-qr-reader';
 import AddIcon from '@material-ui/icons/Add';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import Fab from '@material-ui/core/Fab';
 import TextField from '@material-ui/core/TextField';
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-// const imageEncoder = require('../../controllers/imageEncoder');
-
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -41,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
     width: '70%',
     margin: '20px'
   },
-
   column: {
     display: 'flex',
     flexDirection: 'column',
@@ -67,11 +56,11 @@ const useStyles = makeStyles((theme) => ({
 
 function AddItemDialog() {
   const classes = useStyles();
+
   const txtFieldstyle = {
     width: '70%',
     height: 'auto',
     margin: '10px'
-
   };
 
   const [category, setCategory] = React.useState('');
@@ -79,18 +68,20 @@ function AddItemDialog() {
   const [name, setProductName] = React.useState('');
   const [city, setProductCity] = React.useState('');
   const [price, setProductPrice] = React.useState('');
+  const [open, setOpen] = useState(false);
+  const [result, setResult] = useState(null);
   var [imageBase64, setImageBase64] = React.useState(null);
 
   function getBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
+
       reader.readAsDataURL(file);
       reader.onload = () => {
         let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
         if ((encoded.length % 4) > 0) {
           encoded += '='.repeat(4 - (encoded.length % 4));
         }
-        console.log('IN GET64: ', encoded);
         resolve(encoded);
       };
       reader.onerror = error => reject(error);
@@ -99,10 +90,10 @@ function AddItemDialog() {
 
   const handleImageUpload = async function (event) {
     setUploadedImage(URL.createObjectURL(event.target.files[0]));
+    
     var value = await getBase64(event.target.files[0]);
     setImageBase64(value);
     imageBase64 = value;
-    console.log('IMPORTANT value = ', imageBase64);
   }
 
   const onCategoryChange = (event) => {
@@ -121,10 +112,6 @@ function AddItemDialog() {
     setProductPrice(event.target.value);
   }
 
-
-  const [open, setOpen] = useState(false);
-  const [result, setResult] = useState(null);
-
   const handleClickOpen = () => {
     setOpen(true);
     setResult(null);
@@ -137,13 +124,9 @@ function AddItemDialog() {
 
   const handleConfirm = (event) => {
     event.preventDefault();
+
     const data = new FormData(event.target);
     data.append("imageBase64", imageBase64);
-
-    for (var pair of data.entries()) {
-      console.log(pair[0] + ', ' + pair[1]);
-    }
-    console.log(data.get("image"));
 
     fetch('/api/reuse/item', {
       method: 'POST',
@@ -153,16 +136,10 @@ function AddItemDialog() {
         if (res.status === 200) {
           alert('Successfully added to DB');
         } else {
-          console.log('ERROR: ', res.error);
           throw new Error(res.error);
         }
       })
-      .catch(err => {
-        console.log(err);
-        alert('Item NOT added');
-
-      });
-
+      .catch(err => console.error(err));
 
     reset();
     setOpen(false);

@@ -1,6 +1,7 @@
 const Marker = require('../models/marker.model');
+
 module.exports = {
-  places: (req, res) => { //POST array of elements 
+  create: (req, res) => { //POST array of elements 
     const markers = req.fields;
 
     Marker.create(markers, function (err) {
@@ -13,7 +14,7 @@ module.exports = {
       }
     });
   },
-  show: (req, res) => { 
+  fetch: (req, res) => {
     Marker.find({}, function (err, markers) {
       if (err) {
         console.error(err);
@@ -23,10 +24,8 @@ module.exports = {
           });
       }
       else {
-        console.log(markers);
         res.send(markers);
       }
-
     });
   }
 }
