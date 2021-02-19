@@ -89,7 +89,7 @@ function Reuse(props) {
   const [items, setItems] = React.useState([]);
 
   useEffect(() => {
-    fetch('/api/reuse/items', { method: 'GET' })
+    fetch('/api/reuse/items')
       .then(res => res.json())
       .then(data => setItems(data))
       .catch(err => console.error('GET items failed: ', err));
@@ -144,13 +144,16 @@ function Reuse(props) {
                           <MoreVertIcon />
                         </IconButton>
                       )}
-                      title={`${card.name}`}
-                      subheader={`${card.subheader}`}
+                      title={card.name}
+                      subheader={card.category}
                     />
                     <CardContent>
-                      <Typography variant="body2" color="textSecondary" component="p">
+                      <Typography variant="body2" color="textSecondary">
+                        {card.city}
                       </Typography>
-
+                      <Typography variant="body2" color="textSecondary">
+                        {new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(card.date))}
+                      </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions disableSpacing>

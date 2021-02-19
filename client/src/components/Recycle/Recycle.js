@@ -35,9 +35,7 @@ class Recycle extends Component {
   };
 
   componentDidMount() {
-    fetch('/api/recycle/places', {
-      method: 'GET'
-    })
+    fetch('/api/recycle/places')
       .then(value => value.json())
       .then(data => {
         this.setState({ allMarkers: data });
