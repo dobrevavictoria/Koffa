@@ -76,7 +76,7 @@ function TopBar(props) {
 
   useEffect(() => {
     props.getUserInfo();
-  });
+  }, []);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);

@@ -25,6 +25,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TopBar from '../TopBar';
 import BottomBar from '../BottomBar';
 import AddItemDialog from './AddItemDialog';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const mapStateToProps = state => {
   return {
@@ -82,6 +83,7 @@ const useStyles = makeStyles((theme) => ({
 function Reuse(props) {
   const classes = useStyles();
 
+  const [loading, setLoading] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [ecoLevs, setEcoLevs] = React.useState(null);
   const [toDelete, setToDelete] = React.useState(null);
@@ -91,13 +93,16 @@ function Reuse(props) {
   useEffect(() => {
     fetch('/api/reuse/items')
       .then(res => res.json())
-      .then(data => setItems(data))
+      .then(data => {
+        setItems(data);
+        setLoading(false);
+      })
       .catch(err => console.error('GET items failed: ', err));
-  });
+  }, []);
 
   useEffect(() => {
     props.getUserInfo();
-  });
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -132,27 +137,36 @@ function Reuse(props) {
         <div className={classes.heroContent} />
         <Container className={classes.cardGrid}>
           <Grid container spacing={4}>
-            {items.map(card => (
+            {(loading ? Array.from(new Array(3)) : items).map(card => (
               <Grid item xs={12} sm={8} md={4}>
                 <Card className={classes.cardroot}>
                   <CardActionArea>
-                    <img className={classes.imgStyle}
-                      src={`data:image/png;base64,${Buffer.from(card.imageBuffer.data).toString('base64')}`}></img>
+                    {card ?
+                      <img className={classes.imgStyle}
+                        src={`data:image/png;base64,${Buffer.from(card.imageBuffer.data).toString('base64')}`}></img> :
+                      <Skeleton variant="rect" height="400px" />
+                    }
                     <CardHeader
                       action={(
                         <IconButton aria-label="settings">
                           <MoreVertIcon />
                         </IconButton>
                       )}
-                      title={card.name}
-                      subheader={card.category}
+                      title={loading ? (
+                        <Skeleton animation="wave" height={30} width="80%" style={{ marginBottom: 6 }} />
+                      ) : card.name}
+                      subheader={loading ? <Skeleton animation="wave" height={25} width="40%" /> : card.category}
                     />
                     <CardContent>
                       <Typography variant="body2" color="textSecondary">
-                        {card.city}
+                        {loading ? (
+                          <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
+                        ) : card.city}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
-                        {new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(card.date))}
+                        {loading ? (
+                          <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
+                        ) : new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(card.date))}
                       </Typography>
                     </CardContent>
                   </CardActionArea>
@@ -166,12 +180,14 @@ function Reuse(props) {
                     <IconButton aria-label="price">
                       <EcoIcon />
                       <Typography id="price" variant="body2" color="textSecondary" component="p">
-                        {`${card.price}`}
+                        {loading ? (
+                          <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
+                        ) : `${card.price}`}
                       </Typography>
                     </IconButton>
-                    <Button disabled={props.userInfo.ecoLevs < card.price} onClick={onClick} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
+                    {loading ? null : <Button disabled={props.userInfo.ecoLevs < card.price} onClick={onClick} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
                       Get it
-                    </Button>
+                    </Button>}
                   </CardActions>
                 </Card>
               </Grid>
