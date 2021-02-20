@@ -234,7 +234,7 @@ function AddItemDialog() {
                     Upload Image
                                         </Button>
                 </label>
-                <img src={image} className={classes.image} />
+                <img alt="Upload" src={image} className={classes.image} />
                 <p id="upload-error"></p>
               </div>
             </div>

@@ -143,6 +143,7 @@ function Reuse(props) {
                   <CardActionArea>
                     {card ?
                       <img className={classes.imgStyle}
+                        alt="Item"
                         src={`data:image/png;base64,${Buffer.from(card.imageBuffer.data).toString('base64')}`}></img> :
                       <Skeleton variant="rect" height="400px" />
                     }
@@ -180,9 +181,7 @@ function Reuse(props) {
                     <IconButton aria-label="price">
                       <EcoIcon />
                       <Typography id="price" variant="body2" color="textSecondary" component="p">
-                        {loading ? (
-                          <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
-                        ) : `${card.price}`}
+                        {loading ? null : `${card.price}`}
                       </Typography>
                     </IconButton>
                     {loading ? null : <Button disabled={props.userInfo.ecoLevs < card.price} onClick={onClick} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
