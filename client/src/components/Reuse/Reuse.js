@@ -85,19 +85,11 @@ function Reuse(props) {
 
   const [loading, setLoading] = React.useState(true);
   const [open, setOpen] = React.useState(false);
-  const [ecoLevs, setEcoLevs] = React.useState(null);
-  const [toDelete, setToDelete] = React.useState(null);
-  const [availableEcoLevs, setAvailableEcoLevs] = React.useState(null);
+  const [toDelete, setToDelete] = React.useState({});
   const [items, setItems] = React.useState([]);
 
   useEffect(() => {
-    fetch('/api/reuse/items')
-      .then(res => res.json())
-      .then(data => {
-        setItems(data);
-        setLoading(false);
-      })
-      .catch(err => console.error('GET items failed: ', err));
+    loadItems();
   }, []);
 
   useEffect(() => {
@@ -108,24 +100,37 @@ function Reuse(props) {
     setOpen(true);
   };
 
-  const handleConfirm = (event) => {
-    setOpen(false);
-    document.getElementById('badgeLevsCount').getElementsByClassName('MuiBadge-badge')[0].innerText = availableEcoLevs - ecoLevs;
-    setAvailableEcoLevs(availableEcoLevs - ecoLevs);
+  const loadItems = () => {
+    setLoading(true);
+    fetch('/api/reuse/items')
+      .then(res => res.json())
+      .then(data => {
+        setItems(data);
+        setLoading(false);
+      })
+      .catch(err => console.error('GET items failed: ', err));
+  }
 
-    toDelete.parentNode.removeChild(toDelete);
+  const onItemAdded = () => {
+    loadItems();
+  }
+
+  const handleConfirm = (event) => {
+    fetch(`/api/reuse/items/${toDelete._id}`, { method: 'DELETE' })
+      .then(() => {
+        setOpen(false);
+        setToDelete({});
+        loadItems();
+      })
+      .catch(err => console.error(err));
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const onClick = (event) => {
-    const targetCard = event.target.parentNode.parentNode.parentNode;
-    const ecoLevs = parseInt(targetCard.querySelectorAll('#price')[0].innerText);
-
-    setEcoLevs(ecoLevs);
-    setToDelete(targetCard);
+  const onClick = (event, item) => {
+    setToDelete(item);
     handleClickOpen();
   };
 
@@ -184,7 +189,7 @@ function Reuse(props) {
                         {loading ? null : `${card.price}`}
                       </Typography>
                     </IconButton>
-                    {loading ? null : <Button disabled={props.userInfo.ecoLevs < card.price} onClick={onClick} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
+                    {loading ? null : <Button disabled={props.userInfo.ecoLevs < card.price} onClick={(e) => onClick(e, card)} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
                       Get it
                     </Button>}
                   </CardActions>
@@ -194,7 +199,7 @@ function Reuse(props) {
           </Grid>
         </Container>
         <div className={classes.buttonRoot}>
-          <AddItemDialog />
+          <AddItemDialog onCreate={onItemAdded} />
         </div>
       </main>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -202,7 +207,7 @@ function Reuse(props) {
         <DialogContent dividers>
           <DialogContentText>
             <Typography style={{ display: 'inline-flex' }}>
-              {'Get it for '}{ecoLevs}
+              {'Get it for '}{toDelete.price}
               <EcoIcon />
             </Typography>
           </DialogContentText>

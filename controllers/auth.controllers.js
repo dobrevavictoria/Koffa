@@ -70,8 +70,8 @@ module.exports = {
             error: 'Internal error please try again'
           });
       } else {
-        const {email, ecolevs} = user;
-        res.status(200).json({email, ecolevs});
+        const { email, ecolevs } = user;
+        res.status(200).json({ email, ecolevs });
       }
     });
   }

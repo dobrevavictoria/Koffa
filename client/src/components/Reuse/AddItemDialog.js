@@ -9,11 +9,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import TextField from '@material-ui/core/TextField';
-
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { LinearProgress } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function AddItemDialog() {
+function AddItemDialog(props) {
   const classes = useStyles();
 
   const txtFieldstyle = {
@@ -63,14 +63,16 @@ function AddItemDialog() {
     margin: '10px'
   };
 
-  const [category, setCategory] = React.useState('');
-  const [image, setUploadedImage] = React.useState(null);
-  const [name, setProductName] = React.useState('');
-  const [city, setProductCity] = React.useState('');
-  const [price, setProductPrice] = React.useState('');
+  const [category, setCategory] = useState('');
+  const [image, setUploadedImage] = useState(null);
+  const [name, setProductName] = useState('');
+  const [city, setProductCity] = useState('');
+  const [price, setProductPrice] = useState('');
   const [open, setOpen] = useState(false);
   const [result, setResult] = useState(null);
-  var [imageBase64, setImageBase64] = React.useState(null);
+  const [loading, setLoading] = useState(false);
+
+  var [imageBase64, setImageBase64] = useState(null);
 
   function getBase64(file) {
     return new Promise((resolve, reject) => {
@@ -90,7 +92,7 @@ function AddItemDialog() {
 
   const handleImageUpload = async function (event) {
     setUploadedImage(URL.createObjectURL(event.target.files[0]));
-    
+
     var value = await getBase64(event.target.files[0]);
     setImageBase64(value);
     imageBase64 = value;
@@ -125,24 +127,28 @@ function AddItemDialog() {
   const handleConfirm = (event) => {
     event.preventDefault();
 
+    setLoading(true);
+
     const data = new FormData(event.target);
     data.append("imageBase64", imageBase64);
 
-    fetch('/api/reuse/item', {
+    fetch('/api/reuse/items', {
       method: 'POST',
       body: data
     })
       .then(res => {
         if (res.status === 200) {
-          alert('Successfully added to DB');
+          props.onCreate();
         } else {
           throw new Error(res.error);
         }
       })
-      .catch(err => console.error(err));
-
-    reset();
-    setOpen(false);
+      .catch(err => console.error(err))
+      .finally(() => {
+        setOpen(false);
+        setLoading(false);
+        reset();
+      });
   };
 
   const reset = () => {
@@ -232,15 +238,16 @@ function AddItemDialog() {
                 <label htmlFor="image-file">
                   <Button variant="contained" color="primary" component="div" className={classes.uploadButton}>
                     Upload Image
-                                        </Button>
+                  </Button>
                 </label>
-                <img alt="Upload" src={image} className={classes.image} />
+                <img alt="" src={image} className={classes.image} />
                 <p id="upload-error"></p>
               </div>
             </div>
           </DialogContent>
+          {loading ? <LinearProgress/> : null}
           <DialogActions>
-            <Button color="primary" type="submit">
+            <Button color="primary" type="submit" disabled={loading ? true : undefined}>
               Save
           </Button>
             <Button onClick={handleClose} color="primary">

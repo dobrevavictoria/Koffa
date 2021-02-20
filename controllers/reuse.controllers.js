@@ -1,4 +1,5 @@
 const Item = require('../models/item.model');
+const User = require('../models/user.model');
 
 module.exports = {
   create: (req, res) => {
@@ -34,6 +35,15 @@ module.exports = {
         res.send(items);
       }
     });
+  },
+  buy: (req, res) => {
+    Item.find({ _id: req.params.id }, function (err, item) {
+      User.find({ email: req.user }, function (err, user) {
+        User.updateOne({ email: req.user }, { ecolevs: user.ecolevs - item.prices });
+        Item.deleteOne({ _id: req.params.id })
+          .then(() => res.status(204).json({}))
+          .catch(err => console.error(err));
+      })
+    });
   }
 }
-
