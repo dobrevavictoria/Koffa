@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from "react-redux";
+import { getUserInfo } from '../js/actions/index';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,6 +13,12 @@ import NatureIcon from '@material-ui/icons/NatureOutlined';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import EcoIcon from '@material-ui/icons/Eco';
 import ScannerDialog from './ScannerDialog';
+
+const mapStateToProps = state => {
+  return {
+    userInfo: state.userInfo,
+  };
+};
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -57,14 +65,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TopBar() {
+function TopBar(props) {
   const classes = useStyles();
-  
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  useEffect(() => {
+    props.getUserInfo();
+  }, []);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -107,8 +119,8 @@ export default function TopBar() {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton aria-label="show 137 new eco levs" color="inherit">
-          <Badge badgeContent={137} max={9999} color="secondary">
+        <IconButton color="inherit">
+          <Badge badgeContent={props.userInfo.ecolevs} max={9999} color="secondary">
             <EcoIcon />
           </Badge>
         </IconButton>
@@ -145,8 +157,8 @@ export default function TopBar() {
           </Typography>
           <div className={classes.grow} />
           <ScannerDialog />
-          <IconButton disableRipple aria-label="show 137 eco levs" color="inherit">
-            <Badge id="badgeLevsCount" badgeContent={137} max={9999} color="secondary">
+          <IconButton disableRipple color="inherit">
+            <Badge id="badgeLevsCount" badgeContent={props.userInfo.ecolevs} max={9999} color="secondary">
               <EcoIcon />
             </Badge>
           </IconButton>
@@ -167,3 +179,5 @@ export default function TopBar() {
     </div>
   );
 }
+
+export default connect(mapStateToProps, { getUserInfo })(TopBar);

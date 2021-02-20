@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
+import { connect } from "react-redux";
+import { getUserInfo } from '../../js/actions/index';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,8 +16,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import EcoIcon from '@material-ui/icons/Eco';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -25,6 +24,14 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TopBar from '../TopBar';
 import BottomBar from '../BottomBar';
+import AddItemDialog from './AddItemDialog';
+import Skeleton from '@material-ui/lab/Skeleton';
+
+const mapStateToProps = state => {
+  return {
+    userInfo: state.userInfo,
+  };
+};
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -67,66 +74,63 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(1),
     float: 'right',
   },
+  imgStyle: {
+    width: '100%',
+    height: '400px'
+  }
 }));
 
-const cards = [
-  {
-    productTitle: 'Night Lamp', subheader: 'Plovdiv, 23 Oct 2020', img: require('../../images/lamp.jpg'), description: '', ecoprice: '20',
-  },
-  {
-    productTitle: 'Home Decoration', subheader: 'Burgas, 23 Oct 2020', img: require('../../images/homedecor1.jpg'), description: '', ecoprice: '5',
-  },
-  {
-    productTitle: 'Mini Dress by Lola Dre', subheader: 'Varna, 24 Oct 2020', img: require('../../images/dress.jpg'), description: '', ecoprice: '20',
-  },
-  {
-    productTitle: 'Kitchen Table', subheader: 'Sofia, 23 Oct 2020', img: require('../../images/table.jpg'), description: '', ecoprice: '150',
-  },
-  {
-    productTitle: 'Men Watch', subheader: 'Plovdiv, 23 Oct 2020', img: require('../../images/watch.jpg'), description: '', ecoprice: '55',
-  },
-  {
-    productTitle: '"The Long Walk" by St. King', subheader: 'Sofia, 24 Oct 2020', img: require('../../images/book.jfif'), description: '', ecoprice: '10',
-  },
-  {
-    productTitle: 'X13 Yoga (13”) Intel', subheader: 'Pernik, 23 Oct 2020', img: require('../../images/laptop.jfif'), description: '', ecoprice: '700',
-  },
-];
-
-export default function Reuse() {
+function Reuse(props) {
   const classes = useStyles();
 
+  const [loading, setLoading] = React.useState(true);
   const [open, setOpen] = React.useState(false);
-  const [ecoLevs, setEcoLevs] = React.useState(null);
-  const [toDelete, setToDelete] = React.useState(null);
-  const [availableEcoLevs, setAvailableEcoLevs] = React.useState(null);
+  const [toDelete, setToDelete] = React.useState({});
+  const [items, setItems] = React.useState([]);
 
   useEffect(() => {
-    setAvailableEcoLevs(parseInt(document.getElementById('badgeLevsCount').getElementsByClassName('MuiBadge-badge')[0].innerText));
+    loadItems();
+  }, []);
+
+  useEffect(() => {
+    props.getUserInfo();
   }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleConfirm = (event) => {
-    setOpen(false);
-    document.getElementById('badgeLevsCount').getElementsByClassName('MuiBadge-badge')[0].innerText = availableEcoLevs - ecoLevs;
-    setAvailableEcoLevs(availableEcoLevs - ecoLevs);
+  const loadItems = () => {
+    setLoading(true);
+    fetch('/api/reuse/items')
+      .then(res => res.json())
+      .then(data => {
+        setItems(data);
+        setLoading(false);
+      })
+      .catch(err => console.error('GET items failed: ', err));
+  }
 
-    toDelete.parentNode.removeChild(toDelete);
+  const onItemAdded = () => {
+    loadItems();
+  }
+
+  const handleConfirm = (event) => {
+    fetch(`/api/reuse/items/${toDelete._id}`, { method: 'DELETE' })
+      .then(() => {
+        setOpen(false);
+        setToDelete({});
+        loadItems();
+      })
+      .catch(err => console.error(err));
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const onClick = (event) => {
-    const targetCard = event.target.parentNode.parentNode.parentNode;
-    const ecoLevs = parseInt(targetCard.querySelectorAll('#price')[0].innerText);
-
-    setEcoLevs(ecoLevs);
-    setToDelete(targetCard);
+  const onClick = (event, item) => {
+    setToDelete(item);
     handleClickOpen();
   };
 
@@ -138,27 +142,37 @@ export default function Reuse() {
         <div className={classes.heroContent} />
         <Container className={classes.cardGrid}>
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={8} md={4}>
+            {(loading ? Array.from(new Array(3)) : items).map(card => (
+              <Grid item xs={12} sm={8} md={4}>
                 <Card className={classes.cardroot}>
                   <CardActionArea>
-                    <CardMedia
-                      className={classes.cardmedia}
-                      image={`${card.img}`}
-                      title={`${card.description}`}
-                    />
+                    {card ?
+                      <img className={classes.imgStyle}
+                        alt="Item"
+                        src={`data:image/png;base64,${Buffer.from(card.imageBuffer.data).toString('base64')}`}></img> :
+                      <Skeleton variant="rect" height="400px" />
+                    }
                     <CardHeader
                       action={(
                         <IconButton aria-label="settings">
                           <MoreVertIcon />
                         </IconButton>
                       )}
-                      title={`${card.productTitle}`}
-                      subheader={`${card.subheader}`}
+                      title={loading ? (
+                        <Skeleton animation="wave" height={30} width="80%" style={{ marginBottom: 6 }} />
+                      ) : card.name}
+                      subheader={loading ? <Skeleton animation="wave" height={25} width="40%" /> : card.category}
                     />
                     <CardContent>
-                      <Typography variant="body2" color="textSecondary" component="p">
-                        {`${card.description}`}
+                      <Typography variant="body2" color="textSecondary">
+                        {loading ? (
+                          <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
+                        ) : card.city}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {loading ? (
+                          <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
+                        ) : new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(card.date))}
                       </Typography>
                     </CardContent>
                   </CardActionArea>
@@ -172,28 +186,28 @@ export default function Reuse() {
                     <IconButton aria-label="price">
                       <EcoIcon />
                       <Typography id="price" variant="body2" color="textSecondary" component="p">
-                        {`${card.ecoprice}`}
+                        {loading ? null : `${card.price}`}
                       </Typography>
                     </IconButton>
-                    <Button disabled={availableEcoLevs < card.ecoprice} onClick={onClick} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
+                    {loading ? null : <Button disabled={props.userInfo.ecoLevs < card.price} onClick={(e) => onClick(e, card)} variant="contained" size="medium" color="primary" className={classes.buttonGet}>
                       Get it
-                    </Button>
+                    </Button>}
                   </CardActions>
                 </Card>
               </Grid>
             ))}
           </Grid>
         </Container>
-        <Fab color="primary" size="large" aria-label="add" className={classes.buttonRoot}>
-          <AddIcon />
-        </Fab>
+        <div className={classes.buttonRoot}>
+          <AddItemDialog onCreate={onItemAdded} />
+        </div>
       </main>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Confirmation</DialogTitle>
         <DialogContent dividers>
           <DialogContentText>
             <Typography style={{ display: 'inline-flex' }}>
-              {'Get it for '}{ecoLevs}
+              {'Get it for '}{toDelete.price}
               <EcoIcon />
             </Typography>
           </DialogContentText>
@@ -211,3 +225,5 @@ export default function Reuse() {
     </>
   );
 }
+
+export default connect(mapStateToProps, { getUserInfo })(Reuse);

@@ -3,7 +3,7 @@ const User = require('../models/user.model');
 
 module.exports = {
   register: (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.fields;
     const user = new User({ email, password });
 
     user.save(function (err) {
@@ -21,7 +21,7 @@ module.exports = {
   },
 
   login: (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.fields;
 
     User.findOne({ email }, function (err, user) {
       if (err) {
@@ -58,5 +58,21 @@ module.exports = {
 
   checkToken: (req, res) => {
     res.status(200).json();
+  },
+
+  getUserInfo: (req, res) => {
+    const email = req.user;
+
+    User.findOne({ email }, function (err, user) {
+      if (err || !user) {
+        res.status(500)
+          .json({
+            error: 'Internal error please try again'
+          });
+      } else {
+        const { email, ecolevs } = user;
+        res.status(200).json({ email, ecolevs });
+      }
+    });
   }
 }

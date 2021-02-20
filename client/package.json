@@ -14,8 +14,11 @@
     "react-dom": "16.13.1",
     "react-markdown": "^5.0.2",
     "react-qr-reader": "^2.2.1",
+    "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.4",
+    "react-scripts": "^2.0.5",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
     "sync-fetch": "^0.3.0",
     "tabler-react": "^2.0.0-alpha.1"
   },
